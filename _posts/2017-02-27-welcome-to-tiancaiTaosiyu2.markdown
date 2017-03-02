@@ -1,8 +1,9 @@
 ---
 layout: post
-title:  "欢迎来到天才陶思雨的家"
+title:  "欢迎来到天才陶思雨的家2"
 date:   2017-02-27 18:05:48 +0800
-categories: jekyll update
+categories: news
+author: taosiyu
 ---
  这里现在只是一个普通的小博客，还处于初级阶段，以后还会有重大的更新
  如果等不及那也要等，或者加我的个人微信公众号：taothinkrain的不可思议世界
