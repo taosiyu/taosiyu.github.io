@@ -9,7 +9,7 @@ require_relative 'category_links'
 				output = '<ul>' 
 				site.categories.each do |cat, posts|
 	            	cat_data = category_data(cat, context)
-            		output << '<li>'
+            		output << '<li class="li-type">'
 					if jekyll_archives_installed
 						output << category_link(cat_data, context)
 					else

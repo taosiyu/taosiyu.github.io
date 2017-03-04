@@ -13,11 +13,20 @@ layout: default
             </h1>
                 <p class="post-meta">{{ post.date | date: "%Y年%-m月%-d日" }}</p> 
             </header>
-            <div class="post-content"> 
+            <div class="post-content" > 
                 {{ post.content }}
             </div> 
         </article> 
     {% endfor %}
+
+    <div class="container">
+        <div class="jumbotron">
+          <h1>w文章标题</h1>
+          <p>...</p>
+          <span class="label label-info">Info</span>
+          <h3>Example heading <span class="label label-default">New</span></h3>
+        </div>
+    </div>
 
     <nav>
         <ul class="pager">
