@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "欢迎来到PeachRAin"
+title:  "欢迎来到PeachRain"
 date:   2017-02-27 18:05:48 +0800
 categories: tsy
 author: taosiyu
