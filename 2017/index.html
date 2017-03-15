@@ -8,10 +8,13 @@
 <title> PeachRain</title>
         <!-- Bootstrap -->
 <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<script typet="text/javascript" src="/js/swiper.min.js"></script> 
+<!-- <script typet="text/javascript" src="/js/swiper.jquery.min.js"></script> -->
+<!-- <script typet="text/javascript" src="/js/swiper.jquery.umd.min.js"></script> -->
 
-<script typet="text/javascript" src="http://libs.baidu.com/jquery/1.9.1/jquery.min.js"></script> 
 <link href="/css/main.css" rel="stylesheet">
 <link href="/css/mainTop.css" rel="stylesheet">
+<link href="/css/swiper.min.css" rel="stylesheet">
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media
     queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -26,7 +29,16 @@
   <div class="container" style="">
    <h1>进则进，不进则退！</h1>
    <p>默默地努力，然后再一鸣惊人...</p>
-   <!-- <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a></p> -->
+  </div>
+</div>
+<div class="container" style="background-color: black;opacity: 0.5;margin-left: 0;margin-right: 0;width: 100%">
+  <div class="swiper-container" style="width: 100%;height: 200px;padding: 0;margin-left: 0px">
+      <div class="swiper-wrapper">
+          <div class="swiper-slide" style="background-color: black;opacity: 0.5"><h1 style="color: white;text-align: center;">毅</h1></div>
+          <div class="swiper-slide" style="background-color: black;opacity: 0.6"><h1 style="color: white;text-align: center;">忍</h1></div>
+          <div class="swiper-slide" style="background-color: black;opacity: 0.8"><h1 style="color: white;text-align: center;">稳</h1></div>
+      </div>
+      <div class="swiper-pagination"></div>
   </div>
 </div>
 <nav class="navbar navbar-default" role="navigation"> 
@@ -103,7 +115,10 @@
 <p><a href="https://github.com/taosiyu"><span class="glyphicon glyphicon-cloud" aria-hidden="true"></span> GitHub</a></p>
 <p>网站版权归属:PeachRain</p>
 </footer>
-    
-    
-    </body>
+<script language="javascript"> 
+      var mySwiper = new Swiper('.swiper-container',{
+        pagination : '.swiper-pagination',
+      })
+</script>
+</body>
 </html>
