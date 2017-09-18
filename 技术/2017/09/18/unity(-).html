@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unity3d 入门（一）:熟悉它 - Think的个人博客</title>
+    <meta name="author"  content="陶思雨">
+    <meta name="description" content="Unity3d 入门（一）:熟悉它">
+    <meta name="keywords"  content="unity3d">
+    <!-- Open Graph -->
+    <meta property="og:title" content="Unity3d 入门（一）:熟悉它 - Think的个人博客">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="http://localhost:4000/%E6%8A%80%E6%9C%AF/2017/09/18/unity(-).html">
+    <meta property="og:description" content="英文名Think，ios开发者/游戏爱好者，喜欢学习。希望与你分享我对技术和生活的思考。">
+    <meta property="og:site_name" content="Think的个人博客">
+    <link rel="stylesheet" href="//cdn.staticfile.org/normalize/6.0.0/normalize.min.css">
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_roc50gemkxpw4s4i.css">
+    <link rel="stylesheet" href="/assets/css/github-markdown.css">
+    <link rel="stylesheet" href="/assets/css/prism.css">
+    <link rel="stylesheet" href="/assets/css/share.min.css">
+    <link rel="stylesheet" href="/assets/css/app.min.css">
+</head>
+<body>
+    <!--[if lt IE 10]>
+<div class="alert-danger" role="alert">你的浏览器实在太太太旧了，放学别走，升级完浏览器再说！<a target="_blank" class="alert-link" href="http://browsehappy.com">立即升级</a></div>
+<![endif]-->
+<input id="nm-switch" type="hidden" value="true">
+
+<header class="g-header">
+    <div class="g-logo">
+        <a href="/"></a>
+    </div>
+    <i id="menu-toggle" class="iconfont icon-menu"></i>
+    <nav class="g-nav">
+        <ul>
+            
+            <li><a href="/">home</a></li>
+            
+            <li><a href="/tags.html">tags</a></li>
+            
+        </ul>
+    </nav>
+</header>
+
+
+<header class="g-banner post-header post-pattern-circuitBoard bgcolor-default " data-theme="default">
+    <div class="post-wrapper">
+        <div class="post-tags">
+            
+            
+            <a href="/tags#unity3d" class="post-tag">unity3d</a>
+            
+            
+        </div>
+        <h1>Unity3d 入门（一）:熟悉它</h1>
+        <div class="post-meta">
+            <span class="post-meta-item"><i class="iconfont icon-author"></i><a href="http://localhost:4000" target="_blank" rel="author">陶思雨</a></></span>
+            <time class="post-meta-item" datetime="17-09-18"><i class="iconfont icon-date"></i>18 Sep 2017</time>
+        </div>
+    </div>
+    
+    <div class="filter"></div>
+    <div class="post-cover" style="background: url('http://upload-images.jianshu.io/upload_images/2193807-ce5d81646fc44b65.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240') center no-repeat; background-size: cover;">
+    
+</header>
+
+<div class="post-content">
+    
+    <h2 class="post-subtitle">unity零基础学习</h2>
+    
+    <article class="markdown-body">
+        <blockquote>
+  <p>Transform your plain text into static websites and blogs.</p>
+</blockquote>
+
+<p>##1.了解unity3d</p>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/2193807-ce5d81646fc44b65.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="0.jpg" /></p>
+
+<p>首先我们要对unity3d有一个了解，什么是unity3d?为什么使用unity3d?
+其实很多游戏爱好者曾今都有一个开发游戏的梦，只是游戏开发的门槛还是蛮高的，而一群自由的人们为了满足游戏开发的快速，便捷的要求，开发出了一款有用的工具引擎–Unity3d。正因为有了Unity3d,是的很多人能够使用比较便捷的方法来开发游戏，使得能够有更多的经历在游戏的内涵核心方面。现在我们使用入门，也是因为unity3d开发游戏来说还是相对比较便捷的。
+##2.安装Unity3d
+由于Unity3d的专业版本是需要付费的，不过好在有免费版本，功能有所欠缺，不过用来学习也是够用的。
+官网下载：https://unity3d.com/cn/
+ 点击下载：
+<img src="http://upload-images.jianshu.io/upload_images/2193807-067e96b16f3708ae.PNG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="1.PNG" />
+点击查看旧版本：
+<img src="http://upload-images.jianshu.io/upload_images/2193807-894325cd2b488ae5.PNG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="2.PNG" />
+然后根据自己的操作系统下载相应的版本（这里推荐下载5.6系列版本），教程以5.6为主。
+<img src="http://upload-images.jianshu.io/upload_images/2193807-33d0d4cdac1b7668.PNG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="3.PNG" />
+##2.了解Unity3d界面
+下载完成以后进行安装，安装完成并双击打开程序，会有登录的提示，此时只要填写帐号密码登录就能进入程序主界面了。</p>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/2193807-479fd6ee1187719d.PNG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="4.PNG" />
+界面上的窗口都是可以拖动和自定义的。
+其中：
+        1.Project视图窗口：主要是显示当前环境当中所有的物体元素。
+        2.Scene/Game/等，场景视图，游戏试图：提供场景物体等显示和游戏视角的查看，当然还可以添加其他窗口，比如Animation。
+        3.工程视图窗口：显示当前工程下所有的素材文件等资源。
+        4.Hierachy / Inspector层级视图   检视视图（属性视图）:当选中某个场景物体时，可以查看它的属性等各种元素，可以进行调节。
+在Project视图窗口上方有一排快捷键：
+快捷键从左至右为QWERT，功能为
+Q：调整视图
+W：移动工具
+E：旋转工具
+R：缩放工具
+T：选择工具</p>
+
+<p>在场景视图中使用鼠标可以调节视角和可视区域
+鼠标右键为旋转视图，鼠标中键等于按下Q的左键操作</p>
+
+<p>当然这只是对unity的初步了解，后期可以通过实际的实例来逐步了解unity的一些api和功能。请关注我的简书,或者个人blog：https://taosiyu.github.io
+（blog）还在完善中。。。
+当然官网也是一个不错的学习渠道。</p>
+
+<p>后期我会同步发布blog和视频来让大家进入了解unity = =,请关注等待</p>
+
+    </article>
+    
+    <div class="social-share-wrapper">
+        <div class="social-share"></div>
+    </div>
+    
+</div>
+
+<section class="author-detail">
+    <section class="post-footer-item author-card">
+        <div class="avatar">
+            <img src="/assets/img/profile.png" alt="">
+        </div>
+        <div class="author-name" rel="author">陶思雨</div>
+        <div class="bio">
+            <p>iOS开发者，会一点点的前端技术，热爱游戏，怀旧</p>
+        </div>
+        
+        <ul class="sns-links">
+            
+            <li>
+                <a href="//www.jianshu.com/u/54ec55bb6b32" target="_blank">
+                    <i class="iconfont icon-jianshu"></i>
+                </a>
+            </li>
+            
+            <li>
+                <a href="//github.com/taosiyu" target="_blank">
+                    <i class="iconfont icon-github"></i>
+                </a>
+            </li>
+            
+        </ul>
+        
+    </section>
+    <section class="post-footer-item read-next">
+        
+        
+        <div class="read-next-item">
+            <a href="/%E6%8A%80%E6%9C%AF/2017/07/23/rain-Aimation-Maker.html" class="read-next-link"></a>
+            <section>
+                <span>CoreAnimation研究-RainAnimationMaker</span>
+                <p>  Transform your plain text into static websites and blogs.</p>
+            </section>
+            
+            <div class="filter"></div>
+            <img src="http://upload-images.jianshu.io/upload_images/2193807-716a485615d322d6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="">
+            
+        </div>
+        
+    </section>
+    
+    <section class="post-footer-item comment">
+        <div id="disqus_thread"></div>
+    </section>
+    
+
+    <!-- UY BEGIN -->
+    <div style="margin:0px 20px" id="uyan_frame"></div>
+    <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2144862"></script>
+    <!-- UY END -->
+</section>
+
+<footer class="g-footer">
+    <section>Think的个人博客 © 2017</section>
+    <section>Powered by <a href="//jekyllrb.com">Jekyll</a></section>
+</footer>
+
+<script src="/assets/js/social-share.min.js"></script>
+<script>
+    socialShare('.social-share', {
+        sites: ['github','jianshu'],
+        wechatQrcodeTitle: "分享到微信朋友圈",
+        wechatQrcodeHelper: '<p>扫码后点击右上角</p><p>将本文分享至朋友圈</p>'
+    });
+</script>
+<script>
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+/*写入自己的disqus信息*/
+s.src = 'https://taosiyu.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<!-- <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript> -->
+<script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+<script src="/assets/js/prism.js"></script>
+<script src="/assets/js/index.min.js"></script>
+</body>
+</html>

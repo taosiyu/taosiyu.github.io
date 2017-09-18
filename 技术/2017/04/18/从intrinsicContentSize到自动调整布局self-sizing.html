@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>从intrinsicContentSize到自动调整布局self-sizing - Think的个人博客</title>
+    <meta name="author"  content="陶思雨">
+    <meta name="description" content="从intrinsicContentSize到自动调整布局self-sizing">
+    <meta name="keywords"  content="ios, swift">
+    <!-- Open Graph -->
+    <meta property="og:title" content="从intrinsicContentSize到自动调整布局self-sizing - Think的个人博客">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="http://localhost:4000/%E6%8A%80%E6%9C%AF/2017/04/18/%E4%BB%8EintrinsicContentSize%E5%88%B0%E8%87%AA%E5%8A%A8%E8%B0%83%E6%95%B4%E5%B8%83%E5%B1%80self-sizing.html">
+    <meta property="og:description" content="英文名Think，ios开发者/游戏爱好者，喜欢学习。希望与你分享我对技术和生活的思考。">
+    <meta property="og:site_name" content="Think的个人博客">
+    <link rel="stylesheet" href="//cdn.staticfile.org/normalize/6.0.0/normalize.min.css">
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_roc50gemkxpw4s4i.css">
+    <link rel="stylesheet" href="/assets/css/github-markdown.css">
+    <link rel="stylesheet" href="/assets/css/prism.css">
+    <link rel="stylesheet" href="/assets/css/share.min.css">
+    <link rel="stylesheet" href="/assets/css/app.min.css">
+</head>
+<body>
+    <!--[if lt IE 10]>
+<div class="alert-danger" role="alert">你的浏览器实在太太太旧了，放学别走，升级完浏览器再说！<a target="_blank" class="alert-link" href="http://browsehappy.com">立即升级</a></div>
+<![endif]-->
+<input id="nm-switch" type="hidden" value="true">
+
+<header class="g-header">
+    <div class="g-logo">
+        <a href="/"></a>
+    </div>
+    <i id="menu-toggle" class="iconfont icon-menu"></i>
+    <nav class="g-nav">
+        <ul>
+            
+            <li><a href="/">home</a></li>
+            
+            <li><a href="/tags.html">tags</a></li>
+            
+        </ul>
+    </nav>
+</header>
+
+
+<header class="g-banner post-header post-pattern-circuitBoard bgcolor-default post-no-cover" data-theme="default">
+    <div class="post-wrapper">
+        <div class="post-tags">
+            
+            
+            <a href="/tags#ios" class="post-tag">ios</a>
+            
+            <a href="/tags#swift" class="post-tag">swift</a>
+            
+            
+        </div>
+        <h1>从intrinsicContentSize到自动调整布局self-sizing</h1>
+        <div class="post-meta">
+            <span class="post-meta-item"><i class="iconfont icon-author"></i><a href="http://localhost:4000" target="_blank" rel="author">陶思雨</a></></span>
+            <time class="post-meta-item" datetime="17-04-18"><i class="iconfont icon-date"></i>18 Apr 2017</time>
+        </div>
+    </div>
+    
+</header>
+
+<div class="post-content">
+    
+    <h2 class="post-subtitle">自动就是如此简单</h2>
+    
+    <article class="markdown-body">
+        <h1 id="1-intrinsic-content-size">1. intrinsic Content Size</h1>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>什么是intrinsicContentSize？这个属性是在哪里的？
+刚开始看到这个肯定会有很多的疑问。
+本人接触到这个也是因为功能的需要。（一个自动适应cell内容的collectionview）。
+在刚编程的时候，第一想到的还是手动适应，计算contentSize然后设置frame适应内容，但是这样给人的感觉还是有点low啊.
+果断换其他方法。直到发现了intrinsicContentSize这个便捷的属性，简直不要太兴奋。
+那到底什么是intrinsicContentSize呢？
+Intrinsic Contenet Size – Intrinsic Content Size：固有的大小。
+在AutoLayout中，它作为UIView的属性（不是语法上的属性），意思就是说我知道自己的大小，如果你没有为我指定大小，我就按照这个大小来。
+比如：大家都知道在使用AutoLayout的时候，UILabel是不用指定尺寸大小的，只需指定位置即可，就是因为，只要确定了文字内容，字体等信息，它自己就能计算出大小来。
+同样的UILabel，UIImageView，UIButton等这些组件及某些包含它们的系统组件都有 Intrinsic Content Size 属性，也就说他们都有自己计算size的能力。
+同样的会发现UICollectionView也有这个属性。
+</code></pre>
+</div>
+
+<h1 id="利用intrinsiccontentsize自动计算size">利用intrinsicContentSize自动计算size</h1>
+
+<blockquote>
+  <p>那如何利用intrinsicContentSize呢。
+既然intrinsicContentSize能够自己计算，当然我们也可以手动指定他的大小，这样会有
+人说。那不还是自己计算吗？
+其实不是，当我们改变UICollectionView中cell的约束和内容时，UICollectionView是会自动计算size适应的，这就是contentSize，每当改变contentSize也会随着改变，计算UICollectionView都帮我们算好了，我们就可以利用contentSize来设置内容的size.
+使用在UICollectionView中的 -(CGSize)intrinsicContentSize: 方法。
+并且在需要改变这个值的时候调用：invalidateIntrinsicContentSize 方法，通知系统这个值改变了，如下</p>
+  <div class="highlighter-rouge"><pre class="highlight"><code>//重写该方法返回一个size
+override func intrinsicContentSize() -&gt; CGSize {
+        //此处你可以返回一个自己设定的size值，当然也可以返回contentSize
+        return self.contentSize
+    }
+</code></pre>
+  </div>
+  <p>但是有人比较懒不想主动调用方法，也有更好的自动调用的方法，就是利用layoutSubviews</p>
+  <div class="highlighter-rouge"><pre class="highlight"><code>//自定义的UICollectionView
+class DynamicCollectionView: UICollectionView {
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        //此处加判断如果相等就不更新size
+        if !CGSizeEqualToSize(self.bounds.size, intrinsicContentSize()) {
+            invalidateIntrinsicContentSize()
+        }
+    }
+    override func intrinsicContentSize() -&gt; CGSize {
+        //这里返回自定义的UICollectionView自己的属性contentSize
+        return self.contentSize
+    }
+}
+</code></pre>
+  </div>
+  <p>这样的话每当UICollectionView内部的内容发生改变，他都会自己适应内容的大小达到自适应的目的.当然前提是不能添加高度的约束，添加了高度约束intrinsicContentSize会失效啊，当然你也可以自定义UILabel等，只要有intrinsicContentSize属性的都可以设置自动适应的能力。</p>
+</blockquote>
+
+<h2 id="注意">注意：</h2>
+<blockquote>
+  <p>还有当我们使用自己自定义的UICollectionView的时候，每当刷新数据调用reloadData()方法的时候：
+务必调用 collectionViewLayout.invalidateLayout()方法，不然可能会发生下面的错误</p>
+  <div class="highlighter-rouge"><pre class="highlight"><code>UICollectionView received layout attributes for a cell with an index path that does not exist
+</code></pre>
+  </div>
+  <p>当然，由于还没有特别深入的了解写的不是很详细，其实还有很多有趣的属性，比如：
+invalidateItemsAtIndexPaths:
+invalidateSupplementaryElementsOfKind:atIndexPaths:
+invalidateDecorationElementsOfKind:atIndexPaths:
+的：
+invalidatedItemIndexPaths
+invalidatedSupplementaryIndexPaths
+invalidatedDecorationIndexPaths
+等等有待研究。</p>
+</blockquote>
+
+    </article>
+    
+    <div class="social-share-wrapper">
+        <div class="social-share"></div>
+    </div>
+    
+</div>
+
+<section class="author-detail">
+    <section class="post-footer-item author-card">
+        <div class="avatar">
+            <img src="/assets/img/profile.png" alt="">
+        </div>
+        <div class="author-name" rel="author">陶思雨</div>
+        <div class="bio">
+            <p>iOS开发者，会一点点的前端技术，热爱游戏，怀旧</p>
+        </div>
+        
+        <ul class="sns-links">
+            
+            <li>
+                <a href="//www.jianshu.com/u/54ec55bb6b32" target="_blank">
+                    <i class="iconfont icon-jianshu"></i>
+                </a>
+            </li>
+            
+            <li>
+                <a href="//github.com/taosiyu" target="_blank">
+                    <i class="iconfont icon-github"></i>
+                </a>
+            </li>
+            
+        </ul>
+        
+    </section>
+    <section class="post-footer-item read-next">
+        
+        <div class="read-next-item">
+            <a href="/2017/04/18/hello-jekyll.html" class="read-next-link"></a>
+            <section>
+                <span>Hello Jekyll</span>
+                <p>  Transform your plain text into static websites and blogs.</p>
+            </section>
+            
+            <div class="filter"></div>
+            <img src="http://on2171g4d.bkt.clouddn.com/jekyll-banner.png" alt="">
+            
+        </div>
+        
+        
+        <div class="read-next-item">
+            <a href="/%E4%B8%AA%E4%BA%BA/2017/02/27/welcome-to-tiancaiTaosiyu1.html" class="read-next-link"></a>
+            <section>
+                <span>欢迎来到PeachRain</span>
+                <p>这里现在只是一个普通的小博客，还处于初级阶段，以后还会有重大的更新 如果等不及那也要等， 可以关注我的简书jian...</p>
+            </section>
+            
+        </div>
+        
+    </section>
+    
+    <section class="post-footer-item comment">
+        <div id="disqus_thread"></div>
+    </section>
+    
+
+    <!-- UY BEGIN -->
+    <div style="margin:0px 20px" id="uyan_frame"></div>
+    <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2144862"></script>
+    <!-- UY END -->
+</section>
+
+<footer class="g-footer">
+    <section>Think的个人博客 © 2017</section>
+    <section>Powered by <a href="//jekyllrb.com">Jekyll</a></section>
+</footer>
+
+<script src="/assets/js/social-share.min.js"></script>
+<script>
+    socialShare('.social-share', {
+        sites: ['github','jianshu'],
+        wechatQrcodeTitle: "分享到微信朋友圈",
+        wechatQrcodeHelper: '<p>扫码后点击右上角</p><p>将本文分享至朋友圈</p>'
+    });
+</script>
+<script>
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+/*写入自己的disqus信息*/
+s.src = 'https://taosiyu.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<!-- <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript> -->
+<script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+<script src="/assets/js/prism.js"></script>
+<script src="/assets/js/index.min.js"></script>
+</body>
+</html>
