@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iOS 关于viewController自定义的转场动画 - Think的个人博客</title>
+    <meta name="author"  content="陶思雨">
+    <meta name="description" content="iOS 关于viewController自定义的转场动画">
+    <meta name="keywords"  content="ios">
+    <!-- Open Graph -->
+    <meta property="og:title" content="iOS 关于viewController自定义的转场动画 - Think的个人博客">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="http://localhost:4000/%E6%8A%80%E6%9C%AF/2016/06/27/viewcontroller.html">
+    <meta property="og:description" content="英文名Think，ios开发者/游戏爱好者，喜欢学习。希望与你分享我对技术和生活的思考。">
+    <meta property="og:site_name" content="Think的个人博客">
+    <link rel="stylesheet" href="//cdn.staticfile.org/normalize/6.0.0/normalize.min.css">
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_roc50gemkxpw4s4i.css">
+    <link rel="stylesheet" href="/assets/css/github-markdown.css">
+    <link rel="stylesheet" href="/assets/css/prism.css">
+    <link rel="stylesheet" href="/assets/css/share.min.css">
+    <link rel="stylesheet" href="/assets/css/app.min.css">
+</head>
+<body>
+    <!--[if lt IE 10]>
+<div class="alert-danger" role="alert">你的浏览器实在太太太旧了，放学别走，升级完浏览器再说！<a target="_blank" class="alert-link" href="http://browsehappy.com">立即升级</a></div>
+<![endif]-->
+<input id="nm-switch" type="hidden" value="true">
+
+<header class="g-header">
+    <div class="g-logo">
+        <a href="/"></a>
+    </div>
+    <i id="menu-toggle" class="iconfont icon-menu"></i>
+    <nav class="g-nav">
+        <ul>
+            
+            <li><a href="/">home</a></li>
+            
+            <li><a href="/tags.html">tags</a></li>
+            
+        </ul>
+    </nav>
+</header>
+
+
+<header class="g-banner post-header post-pattern-circuitBoard bgcolor-default post-no-cover" data-theme="default">
+    <div class="post-wrapper">
+        <div class="post-tags">
+            
+            
+            <a href="/tags#ios" class="post-tag">ios</a>
+            
+            
+        </div>
+        <h1>iOS 关于viewController自定义的转场动画</h1>
+        <div class="post-meta">
+            <span class="post-meta-item"><i class="iconfont icon-author"></i><a href="http://localhost:4000" target="_blank" rel="author">陶思雨</a></></span>
+            <time class="post-meta-item" datetime="16-06-27"><i class="iconfont icon-date"></i>27 Jun 2016</time>
+        </div>
+    </div>
+    
+</header>
+
+<div class="post-content">
+    
+    <h2 class="post-subtitle">Autolayout</h2>
+    
+    <article class="markdown-body">
+        <p>关于转场动画我也只是一个新人，最近也是正好需要用到才研究了下，发现这东西太好玩了，基本可以实现各种炫酷的转场的特效，瞬间让你的app高大上有没有。</p>
+
+<p>View Controller 转场是iOS7 引入的新特性自定义，也就是说只有ios7以后才能用吧，但是就目前来讲基本可以忽略不兼容的情况。</p>
+
+<p>首先：</p>
+
+<p>iOS 7 自定义视图控制器转场的 API 基本上都是以协议的方式提供的。最主要的五个组件如下:</p>
+
+<p>动画控制器 (Animation Controllers)遵从UIViewControllerAnimatedTransitioning协议，并且负责实际执行动画。</p>
+
+<p>交互控制器 (Interaction Controllers)通过遵从UIViewControllerInteractiveTransitioning协议来控制可交互式的转场。</p>
+
+<p>转场代理 (Transitioning Delegates)根据不同的转场类型方便的提供需要的动画控制器和交互控制器。</p>
+
+<p>转场上下文 (Transitioning Contexts)定义了转场时需要的元数据，比如在转场过程中所参与的视图控制器和视图的相关属性。 转场上下文对象遵从UIViewControllerContextTransitioning协议，并且这是由系统负责生成和提供的。</p>
+
+<p>转场协调器(Transition Coordinators)可以在运行转场动画时，并行的运行其他动画。 转场协调器遵从UIViewControllerTransitionCoordinator协议。</p>
+
+<p>自定义转场就是说，自己定义一个动画，利用UIViewControllerAnimatedTransitioning动画控制器，我们可以很方便的自己写一个类并遵守UIViewControllerAnimatedTransitioning协议，然后完成相对应的方法，主要是以下两个方法</p>
+
+<ul>
+  <li>
+    <p>(NSTimeInterval)transitionDuration:(id)transitionContext；动画的执行时间</p>
+  </li>
+  <li>
+    <p>(void)animateTransition:(id)transitionContext;//动画，我们就是要在这里面写转场的效果.</p>
+  </li>
+</ul>
+
+<p>以下是demo里的一小段代码</p>
+
+<ul>
+  <li>(NSTimeInterval)transitionDuration:(id)transitionContext {</li>
+</ul>
+
+<p>return 0.7;//动画执行的时长</p>
+
+<p>}</p>
+
+<ul>
+  <li>(void)animateTransition:(id)transitionContext {</li>
+</ul>
+
+<p>CATransform3D viewFromTransform = CATransform3DMakeRotation(M_PI/2, 0, 1, 0);    CATransform3D viewToTransform = CATransform3DMakeRotation(-M_PI/2, 0, 1, 0);    viewFromTransform.m34 = PERSPECTIVE;    viewToTransform.m34 = PERSPECTIVE;      UIViewController *toVC = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];    UIViewController *fromVC = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];</p>
+
+<p>UIView *container = [transitionContext containerView];        //普通的左右滑动切换效果//</p>
+
+<p>BOOL goingRight = toVC.view.tag</p>
+
+<blockquote>
+  <blockquote>
+    <blockquote>
+      <blockquote>
+        <blockquote>
+          <blockquote>
+            <blockquote>
+              <blockquote>
+                <blockquote>
+                  <blockquote>
+                    <blockquote>
+                      <blockquote>
+                        <blockquote>
+                          <blockquote>
+                            <blockquote>
+                              <blockquote>
+                                <blockquote>
+                                  <blockquote>
+                                    <blockquote>
+                                      <blockquote>
+                                        <blockquote>
+                                          <blockquote>
+                                            <blockquote>
+                                              <blockquote>
+                                                <blockquote>
+                                                  <blockquote>
+                                                    <blockquote>
+                                                      <blockquote>
+                                                        <blockquote>
+                                                          <blockquote>
+                                                            <blockquote>
+                                                              <blockquote>
+                                                                <blockquote>
+                                                                  <blockquote>
+
+                                                                  </blockquote>
+                                                                </blockquote>
+                                                              </blockquote>
+                                                            </blockquote>
+                                                          </blockquote>
+                                                        </blockquote>
+                                                      </blockquote>
+                                                    </blockquote>
+                                                  </blockquote>
+                                                </blockquote>
+                                              </blockquote>
+                                            </blockquote>
+                                          </blockquote>
+                                        </blockquote>
+                                      </blockquote>
+                                    </blockquote>
+                                  </blockquote>
+                                </blockquote>
+                              </blockquote>
+                            </blockquote>
+                          </blockquote>
+                        </blockquote>
+                      </blockquote>
+                    </blockquote>
+                  </blockquote>
+                </blockquote>
+              </blockquote>
+            </blockquote>
+          </blockquote>
+        </blockquote>
+      </blockquote>
+    </blockquote>
+  </blockquote>
+</blockquote>
+
+<p>//四方立体柱转换效果</p>
+
+<p>[toVC.view.layer setAnchorPoint:CGPointMake(0, 0.5)];</p>
+
+<p>[fromVC.view.layer setAnchorPoint:CGPointMake(1, 0.5)];</p>
+
+<p>toVC.view.layer.transform = viewToTransform;</p>
+
+<p>[container addSubview:toVC.view];</p>
+
+<p>container.transform = CGAffineTransformMakeTranslation(container.frame.size.width/2.0,0);</p>
+
+<p>[UIView animateWithDuration:[self transitionDuration:transitionContext] animations:^{</p>
+
+<p>fromVC.view.layer.transform = viewFromTransform;</p>
+
+<p>toVC.view.layer.transform = CATransform3DIdentity;</p>
+
+<p>[container setTransform:CGAffineTransformMakeTranslation(-container.frame.size.width/2.0, 0)];</p>
+
+<p>} completion:^(BOOL finished) {</p>
+
+<p>fromVC.view.layer.transform = CATransform3DIdentity;</p>
+
+<p>toVC.view.layer.transform = CATransform3DIdentity;</p>
+
+<p>[fromVC.view.layer setAnchorPoint:CGPointMake(0.5f, 0.5f)];</p>
+
+<p>[toVC.view.layer setAnchorPoint:CGPointMake(0.5f, 0.5f)];</p>
+
+<p>[container setTransform:CGAffineTransformIdentity];</p>
+
+<p>[transitionContext completeTransition:YES];</p>
+
+<p>}];</p>
+
+<p>}
+作为一个ios的小小工程师其实对这些api还不是很了解只能放出写demo让大家自己研究下了。</p>
+
+<p>demo：https://github.com/taosiyu/TSYViewFromTo</p>
+
+    </article>
+    
+    <div class="social-share-wrapper">
+        <div class="social-share"></div>
+    </div>
+    
+</div>
+
+<section class="author-detail">
+    <section class="post-footer-item author-card">
+        <div class="avatar">
+            <img src="/assets/img/profile.png" alt="">
+        </div>
+        <div class="author-name" rel="author">陶思雨</div>
+        <div class="bio">
+            <p>iOS开发者，会一点点的前端技术，热爱游戏，怀旧</p>
+        </div>
+        
+        <ul class="sns-links">
+            
+            <li>
+                <a href="//www.jianshu.com/u/54ec55bb6b32" target="_blank">
+                    <i class="iconfont icon-jianshu"></i>
+                </a>
+            </li>
+            
+            <li>
+                <a href="//github.com/taosiyu" target="_blank">
+                    <i class="iconfont icon-github"></i>
+                </a>
+            </li>
+            
+        </ul>
+        
+    </section>
+    <section class="post-footer-item read-next">
+        
+        <div class="read-next-item">
+            <a href="/%E6%8A%80%E6%9C%AF/2016/08/31/VFL.html" class="read-next-link"></a>
+            <section>
+                <span>iOS自动布局(Autolayout)之VFL（可视化格式语言）</span>
+                <p>作为一个移动端的程序员，布局永远都是需要打交道的东西，最初刚入门那会，用的storyboard,xib手动拖拽的方...</p>
+            </section>
+            
+        </div>
+        
+        
+    </section>
+    <!--  -->
+
+    <!-- UY BEGIN -->
+    <div style="margin:0px 20px" id="uyan_frame"></div>
+    <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2144862"></script>
+    <!-- UY END -->
+</section>
+
+<footer class="g-footer">
+    <section>Think的个人博客 © 2017</section>
+    <section>Powered by <a href="//jekyllrb.com">Jekyll</a></section>
+</footer>
+
+<script src="/assets/js/social-share.min.js"></script>
+<script>
+    socialShare('.social-share', {
+        sites: ['github','jianshu'],
+        wechatQrcodeTitle: "分享到微信朋友圈",
+        wechatQrcodeHelper: '<p>扫码后点击右上角</p><p>将本文分享至朋友圈</p>'
+    });
+</script>
+<!-- <script>
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+/*写入自己的disqus信息*/
+s.src = 'https://taosiyu.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script> -->
+<!-- <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript> -->
+<script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+<script src="/assets/js/prism.js"></script>
+<script src="/assets/js/index.min.js"></script>
+</body>
+</html>

@@ -1,7 +1,7 @@
 [
   
     {
-      "title"    : "Unity3d 入门（一）:熟悉它",
+      "title"    : "Unity3d 入门（一）:了解unity3d",
       "tags"     : "unity3d",
       "url"      : "/%E6%8A%80%E6%9C%AF/2017/09/18/unity(-).html"
     } ,
@@ -25,9 +25,27 @@
     } ,
   
     {
+      "title"    : "ios常用功能集合（本地邮件,本地短信,拨打电话,获取联系人,加速器,蓝牙,WKWebView,地图）",
+      "tags"     : "ios swift",
+      "url"      : "/%E6%8A%80%E6%9C%AF/2017/04/12/all.html"
+    } ,
+  
+    {
       "title"    : "欢迎来到PeachRain",
       "tags"     : "个人",
       "url"      : "/%E4%B8%AA%E4%BA%BA/2017/02/27/welcome-to-tiancaiTaosiyu1.html"
+    } ,
+  
+    {
+      "title"    : "iOS自动布局(Autolayout)之VFL（可视化格式语言）",
+      "tags"     : "ios",
+      "url"      : "/%E6%8A%80%E6%9C%AF/2016/08/31/VFL.html"
+    } ,
+  
+    {
+      "title"    : "iOS 关于viewController自定义的转场动画",
+      "tags"     : "ios",
+      "url"      : "/%E6%8A%80%E6%9C%AF/2016/06/27/viewcontroller.html"
     } 
   
 ]

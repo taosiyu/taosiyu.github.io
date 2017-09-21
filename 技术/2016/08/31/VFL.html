@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iOS自动布局(Autolayout)之VFL（可视化格式语言） - Think的个人博客</title>
+    <meta name="author"  content="陶思雨">
+    <meta name="description" content="iOS自动布局(Autolayout)之VFL（可视化格式语言）">
+    <meta name="keywords"  content="ios">
+    <!-- Open Graph -->
+    <meta property="og:title" content="iOS自动布局(Autolayout)之VFL（可视化格式语言） - Think的个人博客">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="http://localhost:4000/%E6%8A%80%E6%9C%AF/2016/08/31/VFL.html">
+    <meta property="og:description" content="英文名Think，ios开发者/游戏爱好者，喜欢学习。希望与你分享我对技术和生活的思考。">
+    <meta property="og:site_name" content="Think的个人博客">
+    <link rel="stylesheet" href="//cdn.staticfile.org/normalize/6.0.0/normalize.min.css">
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_roc50gemkxpw4s4i.css">
+    <link rel="stylesheet" href="/assets/css/github-markdown.css">
+    <link rel="stylesheet" href="/assets/css/prism.css">
+    <link rel="stylesheet" href="/assets/css/share.min.css">
+    <link rel="stylesheet" href="/assets/css/app.min.css">
+</head>
+<body>
+    <!--[if lt IE 10]>
+<div class="alert-danger" role="alert">你的浏览器实在太太太旧了，放学别走，升级完浏览器再说！<a target="_blank" class="alert-link" href="http://browsehappy.com">立即升级</a></div>
+<![endif]-->
+<input id="nm-switch" type="hidden" value="true">
+
+<header class="g-header">
+    <div class="g-logo">
+        <a href="/"></a>
+    </div>
+    <i id="menu-toggle" class="iconfont icon-menu"></i>
+    <nav class="g-nav">
+        <ul>
+            
+            <li><a href="/">home</a></li>
+            
+            <li><a href="/tags.html">tags</a></li>
+            
+        </ul>
+    </nav>
+</header>
+
+
+<header class="g-banner post-header post-pattern-circuitBoard bgcolor-default post-no-cover" data-theme="default">
+    <div class="post-wrapper">
+        <div class="post-tags">
+            
+            
+            <a href="/tags#ios" class="post-tag">ios</a>
+            
+            
+        </div>
+        <h1>iOS自动布局(Autolayout)之VFL（可视化格式语言）</h1>
+        <div class="post-meta">
+            <span class="post-meta-item"><i class="iconfont icon-author"></i><a href="http://localhost:4000" target="_blank" rel="author">陶思雨</a></></span>
+            <time class="post-meta-item" datetime="16-08-31"><i class="iconfont icon-date"></i>31 Aug 2016</time>
+        </div>
+    </div>
+    
+</header>
+
+<div class="post-content">
+    
+    <h2 class="post-subtitle">Autolayout</h2>
+    
+    <article class="markdown-body">
+        <p>作为一个移动端的程序员，布局永远都是需要打交道的东西，最初刚入门那会，用的storyboard,xib手动拖拽的方式设置约束，看起来是直观了，但是费时又费力还吃力不讨好，感觉还是没有纯纯的代码好用。</p>
+
+<p>代码约束最初还是靠本人机密的计算，算比例算数值各种算，约束是没问题了，时间浪费了很多，计算能力倒是增强了不少 T-T。。。。。。。。</p>
+
+<p>后来我发现了个好东西</p>
+
+<p>UIView *v1 = [[UIView alloc] initWithFrame:CGRectZero];</p>
+
+<p>v1.translatesAutoresizingMaskIntoConstraints = NO;</p>
+
+<p>v1.backgroundColor = [UIColor redColor];</p>
+
+<p>[self.view addSubview:v1];</p>
+
+<p>UIView *v2 = [[UIView alloc] initWithFrame:CGRectZero];</p>
+
+<p>v2.backgroundColor = [UIColor grayColor];</p>
+
+<p>v2.translatesAutoresizingMaskIntoConstraints = NO;</p>
+
+<p>[self.view addSubview:v2];//添加两个允许自动布局的子视图</p>
+
+<p>[self.viewaddConstraint:[NSLayoutConstraint constraintWithItem:v1attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self.viewattribute:NSLayoutAttributeHeight multiplier:0.5constant:0]];//设置子视图的高度是父视图高度的一半
+大致就是这样一种约束形式，是不是觉得很长，而且没有注释的话一眼还看不出来是哪哪的约束，于是我又找了找，发现了这个</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>                                          VFL
+</code></pre>
+</div>
+
+<p>Visual Format Language，简称VFL 即“可视化格式语言”。</p>
+
+<p>VFL是一种声明性语言，VFL允许您通过一个格式化后的代码字符串迅速定义视图的自动布局约束</p>
+
+<p>他给人的感觉就是直观，因为你会发现很多的这个</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>                                        H:|-20-[view1]-30-[view2(==view1)]-20-|
+</code></pre>
+</div>
+
+<p>看到这个是不是蒙圈了，不要急，其实这东西还是蛮简单的，慢慢看看规则一学就会了，接下来我就快速的解释一下</p>
+
+<p>首先</p>
+
+<ul>
+  <li>(NSArray&lt;__kindof NSLayoutConstraint <em>&gt; *)constraintsWithVisualFormat:(NSString *)format options:(NSLayoutFormatOptions)opts metrics:(nullable NSDictionary</em>)metrics views:(NSDictionary*)views;
+运用这个api就能简单实现约束了，当然VFL还是要写的</li>
+</ul>
+
+<p>format  格式规范的约束。</p>
+
+<p>opts       描述VFL中的所有对象的属性和布局的方向 。</p>
+
+<p>metrics  一个字典，字典的key必须是在VFL字符串中被使用的字符串，值必须是NSNumber对象</p>
+
+<p>views     出现在在VFL字符串中的视图组成的字典， 字典的key必须是在VFL字符串中被使用的字符串。并且其值必须是一个View对象
+先来一段代码</p>
+
+<p>_view1= [[UIViewalloc]init];</p>
+
+<p>_view1.backgroundColor= [UIColorwhiteColor];</p>
+
+<p>_view1.translatesAutoresizingMaskIntoConstraints=NO;</p>
+
+<p>_view2= [[UIViewalloc]init];</p>
+
+<p>_view2.backgroundColor= [UIColorgreenColor];</p>
+
+<p>_view2.translatesAutoresizingMaskIntoConstraints=NO;</p>
+
+<p>UIView*view4 = [[UIViewalloc]init];</p>
+
+<p>view4.backgroundColor= [UIColorpurpleColor];</p>
+
+<p>view4.translatesAutoresizingMaskIntoConstraints=NO;</p>
+
+<p>[self.viewaddSubview:_view1];</p>
+
+<p>[self.viewaddSubview:_view2];</p>
+
+<p>self.view.backgroundColor= [UIColorgrayColor];</p>
+
+<p>UIView*view1 =_view1;</p>
+
+<p>UIView*view2 =_view2;</p>
+
+<p>NSDictionary*bindings =NSDictionaryOfVariableBindings(view1,view2);</p>
+
+<p>NSArray*constraints=
+[NSLayoutConstraintconstraintsWithVisualFormat:@”H:|-20-[view1]-30-[view2(==view1)]-20-|”
+options:0metrics:nilviews:bindings];</p>
+
+<p>NSArray*constraints2=
+[NSLayoutConstraintconstraintsWithVisualFormat:@”V:|-20-[view1(40)]”
+options:0metrics:nilviews:NSDictionaryOfVariableBindings(view1)];</p>
+
+<p>NSArray*constraints3=
+[NSLayoutConstraintconstraintsWithVisualFormat:@”V:|-20-[view2(40)]”
+options:0metrics:nilviews:NSDictionaryOfVariableBindings(view2)];</p>
+
+<p>[self.viewaddConstraints:constraints];</p>
+
+<p>[self.viewaddConstraints:constraints2];</p>
+
+<p>[self.viewaddConstraints:constraints3];
+效果是这样的</p>
+
+<p>屏幕怎么转我的控件在我的控制之中这就是VFL的方便之处，哈哈、。</p>
+
+<p>解释开始：</p>
+
+<p>VFL 语法</p>
+
+<p>(<方向>:)?(<父视图前><连接>)？[<被布局视图>]！（<连接><其他视图>）*（<连接><父视图后>）？</父视图后></连接></其他视图></连接></被布局视图></连接></父视图前></方向></p>
+
+<p>1                                 2                            3                              4                        5</p>
+
+<p>？问号指的是一个可选项，不是必需的。*指的是该项会出现0次或者多次。！代表必需指定</p>
+
+<p>虽然该定义看上去令人生畏，但是事实上这些字符串相当容易构建。</p>
+
+<p>例如：</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>“H:</td>
+      <td>-[view1]-[view2]-(&gt;=8)-[view3]-</td>
+      <td>”</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>VFL格式字符串:</p>
+
+<p>1.方向：约束在坐标轴上的方向。H代表水平方向排列，V代表垂直方向排列，不指定代表默认值水平方向</p>
+
+<p>2.父视图前：关联到父视图前边缘。 垂直方向上的被布局视图顶部边缘与父视图顶部边缘的距离，水平方向上的被布局视图前边缘与父视图前边缘的距离</p>
+
+<p>3.被布局视图：你添加layout的视图。</p>
+
+<p>4.其他视图：被布局视图关联的另外一个视图</p>
+
+<p>5.父视图后：关联到父视图后边缘。垂直方向上的被布局视图底部边缘与父视图底部边缘的距离，水平方向上的被布局视图后边缘与父视图后边缘的距离</p>
+
+<p>视图名称</p>
+
+<p>视图的名称被一对方括号包围，例如你可以使用[thisView],[thatView]。当使用变量绑定字典时，视图的名称指的是本地变量名。</p>
+
+<p>父视图</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>总是用一个特殊的字符 竖线“</td>
+      <td>”，来表示父视图，仅会在VFL的开头或者结尾出现。在开头时候，它恰好出现在水平或者垂直方向指定符之后（“V:</td>
+      <td>”或者“H:</td>
+      <td>”）。在结尾时，它恰好出现在引号之前（“…..</td>
+      <td>”）。</td>
+    </tr>
+  </tbody>
+</table>
+
+<table>
+  <tbody>
+    <tr>
+      <td>无需在绑定字典中命名父视图。AutoLayout知道“</td>
+      <td>”代表父视图。</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>使用父视图的典型包括：</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>延伸一个视图来适应它的父视图，例如“H:</td>
+      <td>[view]</td>
+      <td>”</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>将一个视图偏离它的父视图的某条变，例如“V:[view]-8-”</p>
+
+<p>创建一列或一行与父视图对齐的视图，例如“V:[view1]-[view2]-[view3]-[view4]”</p>
+
+<p>连接</p>
+
+<p>连接指定视图直接的间隔。每个视图（包括父视图的引用）间的连接标明了要添加的间距。</p>
+
+<p>空连接</p>
+
+<p>空连接看起来像“ H:[view1][view2]”,在每个视图的方括号直接没有任何符号，没有指定任何东西，显示效果将是两个视图仅仅的贴在了一起</p>
+
+<p>标准间隔</p>
+
+<p>连接符 - 代表一个标准的固定间隔，比如“ H:[view1]-[view2]”，每个视图直接增加了一个小的间隙，尽管官方并没有文档化，但标准间隔一般对于视图到视图布局为8点，对于视图到父视图为20点。标准间隔确保相关联但是又完全分离的视图以足够的视觉间隔显示。</p>
+
+<p>数字间隔</p>
+
+<p>可以在两个方括号直接使用一对连字符中间夹着数字来设置准确的间隔大小，约束“ H:[view1]-30-[view2]”在两个视图之间增加了一个30点的间隔。</p>
+
+<p>引用父视图</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>格式“ H:</td>
+      <td>[view1]-[view2]</td>
+      <td>”确定了以父视图开头的水平布局。父视图后紧跟的是第一个视图，然后是一个间隔和第二个视图，之后是一个竖线符也就是是父视图。</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>与父视图的间隔</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>格式“ H:</td>
+      <td>-[view1]-[view2]-</td>
+      <td>”为前后边缘到父视图，每个增加了一个标准间隔 20点</td>
+    </tr>
+  </tbody>
+</table>
+
+<table>
+  <tbody>
+    <tr>
+      <td>格式“ H:</td>
+      <td>[view1]-[view2]-50-</td>
+      <td>”为后边缘到父视图，增加了一个自定义间隔 50点</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>灵活间隔</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>如果是目标是在视图间添加一个灵活间隔，同也有办法。为两个视图添加一个关系规则（例如“H:</td>
+      <td>-[view1]-(&gt;=0)-[view2]-</td>
+      <td>”），允许这两个视图保持他们的尺寸，在维护他们的边缘同父视图的间隔时将他们分离出来。</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>这个规则可以读作“至少0点间距”，提供了使视图分开的更灵活的方式。</p>
+
+<p>当说“至少50点”(&gt;50 )或者“不超过30带你”(&lt;=30)时，不能将间距和标准间隔结合起来是有。例如&gt;=-，&lt;=1是非法的。你只能使用等值数值。记住，标准的视图到时间间隔是8点，而视图到父视图的间隔是20带你。</p>
+
+<p>圆括号</p>
+
+<p>为了清晰可见，关系(&gt;=0)被放在一堆括号中，括号将非常简单的正数或者负数或者度量名间隔区分开来</p>
+
+<p>在如何表达规则时，你可以对可视化约束有很大的灵活性。如下规则都实现两个相互眦邻的视图：</p>
+
+<p>[view1][view2]</p>
+
+<p>[view1]-0-[view2]</p>
+
+<p>[view1]-(0)-[view2]</p>
+
+<p>[view1]-(==0)-[view2]</p>
+
+<p>[view1]-(&gt;=0,&lt;=0)-[view2]</p>
+
+<p>[view1]-(==0@1000)-[view2]</p>
+
+<p>[view1]-(&gt;=0,&lt;=0,&lt;=30)-[view2]</p>
+
+<p>当在括号中添加多个关系时，使用逗号分隔各项。符号@表示一个优先级</p>
+
+<p>负数</p>
+
+<p>比如为任何使用负数值的间隔加上括号。如下约束是非法的：</p>
+
+<p>V:[view1]–5-[view2]</p>
+
+<p>负数在可视化约束中是允许的，正确写法</p>
+
+<p>V:[view1]-(-5)-[view2]</p>
+
+<p>优先级</p>
+
+<p>在任何连接或者尺寸规则后拼接一个@符号，@符号后是一个想要设置的优先级。为了清晰可见，最好将其使用圆括号括起来</p>
+
+<p>例如：</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>“H:</td>
+      <td>-(5@20)[view1]-[view2]-</td>
+      <td>”</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>间隔规则优先级默认是必须的（值为1000），因为将优先级降到了20，所以两个视图改变尺寸的方式可以能会影响布局。</p>
+
+<p>多视图</p>
+
+<p>格式视图并不局限于一个或者两个视图，我可以很容易的插入第三个，第四个或者更多。</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>“H:</td>
+      <td>-[view1]-[view2]-(&gt;=8)-[view3]-</td>
+      <td>”</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>视图尺寸</p>
+
+<p>VFL除了可以用方括号分隔视图名称外，还可以在方括号中指定视图的尺寸。可以在名称之后的圆括号里指定值，例如：</p>
+
+<p>可以指定一个视图的宽度为120点固定值：“H:[view1(120)]”。如果你喜欢显示的说明关系，也可以添加这样的格式“H:[view1(==120)]”</p>
+
+<p>可以指定一个视图的宽度至少50点，使用如下约束：“H:[view1(&gt;=50)]”,50-70点之间“H:[view1(&gt;=50，&lt;=70)]”</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>可以引用其他视图指定尺寸：”H:</td>
+      <td>[view1(view2)-[view2]-</td>
+      <td>]“,因为约束是无方向的，所以可以自我引用，可以使用如下方式创建一个相等布局：”H:</td>
+      <td>[view1(view2)-[view2(view2)]-</td>
+      <td>]“,循环定义不会产生性能损失。</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>不是所有视图都需要参与尺寸匹配。一个请求可以围绕一个基本视图创建侧翼视图</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>视图尺寸也可以表示优先级。在格式化字符串“H:</td>
+      <td>[view1(==250@700)]-[view2(==250@701)]-</td>
+      <td>”中，view1和view2都请求宽度为250点，view2获胜，因为他的请求有更大的优先级，所以首先拉伸view2</td>
+    </tr>
+  </tbody>
+</table>
+
+<table>
+  <tbody>
+    <tr>
+      <td>尽管可以很容易地在代码中使用乘数来创建表达相对尺寸的约束，但是无法在可视化约束中那样做。这是一个非法约束：:”H:</td>
+      <td>[view1==2*view2]-[view2]-</td>
+      <td>“。如果想说“view1宽度是view2的两倍”，就需要在代码中实现</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>看的好晕，好吧其实我也做了个小demo，顺便放了很多其它东西，如果觉得有用可以自己下载</p>
+
+<p>VFLDemo：https://github.com/taosiyu/TSYVFLDemo</p>
+
+<p>可以的话给个star</p>
+
+    </article>
+    
+    <div class="social-share-wrapper">
+        <div class="social-share"></div>
+    </div>
+    
+</div>
+
+<section class="author-detail">
+    <section class="post-footer-item author-card">
+        <div class="avatar">
+            <img src="/assets/img/profile.png" alt="">
+        </div>
+        <div class="author-name" rel="author">陶思雨</div>
+        <div class="bio">
+            <p>iOS开发者，会一点点的前端技术，热爱游戏，怀旧</p>
+        </div>
+        
+        <ul class="sns-links">
+            
+            <li>
+                <a href="//www.jianshu.com/u/54ec55bb6b32" target="_blank">
+                    <i class="iconfont icon-jianshu"></i>
+                </a>
+            </li>
+            
+            <li>
+                <a href="//github.com/taosiyu" target="_blank">
+                    <i class="iconfont icon-github"></i>
+                </a>
+            </li>
+            
+        </ul>
+        
+    </section>
+    <section class="post-footer-item read-next">
+        
+        <div class="read-next-item">
+            <a href="/%E4%B8%AA%E4%BA%BA/2017/02/27/welcome-to-tiancaiTaosiyu1.html" class="read-next-link"></a>
+            <section>
+                <span>欢迎来到PeachRain</span>
+                <p>这里现在只是一个普通的小博客，还处于初级阶段，以后还会有重大的更新 如果等不及那也要等， 可以关注我的简书jian...</p>
+            </section>
+            
+        </div>
+        
+        
+        <div class="read-next-item">
+            <a href="/%E6%8A%80%E6%9C%AF/2016/06/27/viewcontroller.html" class="read-next-link"></a>
+            <section>
+                <span>iOS 关于viewController自定义的转场动画</span>
+                <p>关于转场动画我也只是一个新人，最近也是正好需要用到才研究了下，发现这东西太好玩了，基本可以实现各种炫酷的转场的特效...</p>
+            </section>
+            
+        </div>
+        
+    </section>
+    <!--  -->
+
+    <!-- UY BEGIN -->
+    <div style="margin:0px 20px" id="uyan_frame"></div>
+    <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2144862"></script>
+    <!-- UY END -->
+</section>
+
+<footer class="g-footer">
+    <section>Think的个人博客 © 2017</section>
+    <section>Powered by <a href="//jekyllrb.com">Jekyll</a></section>
+</footer>
+
+<script src="/assets/js/social-share.min.js"></script>
+<script>
+    socialShare('.social-share', {
+        sites: ['github','jianshu'],
+        wechatQrcodeTitle: "分享到微信朋友圈",
+        wechatQrcodeHelper: '<p>扫码后点击右上角</p><p>将本文分享至朋友圈</p>'
+    });
+</script>
+<!-- <script>
+/**
+*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+/*
+var disqus_config = function () {
+this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+};
+*/
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+/*写入自己的disqus信息*/
+s.src = 'https://taosiyu.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script> -->
+<!-- <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript> -->
+<script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+<script src="/assets/js/prism.js"></script>
+<script src="/assets/js/index.min.js"></script>
+</body>
+</html>
